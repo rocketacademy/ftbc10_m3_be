@@ -46,6 +46,20 @@ class StudentController {
       console.log("error when getting new data");
     }
   };
+
+  getStudentsAddress = async (req, res) => {
+    const userId = req.params.userId;
+
+    try {
+      const information = await this.client.query(
+        `SELECT * FROM students join students_addresses on students.id = students_addresses.student_id WHERE students.id = ${userId};`
+      );
+
+      res.json(information.rows);
+    } catch (e) {
+      console.log(e);
+    }
+  };
 }
 
 module.exports = StudentController;
