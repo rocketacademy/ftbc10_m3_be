@@ -1,12 +1,15 @@
+const student = require("../db/models/student");
+
 class StudentController {
-  constructor(client) {
-    this.client = client;
+  constructor(model, student_addresses) {
+    this.model = model;
+    this.student_addresses = student_addresses;
   }
 
   getStudents = async (req, res) => {
-    const data = await this.client.query("SELECT * FROM students;");
-    console.log(data);
-    res.json(data.rows);
+    // const data = await this.client.query("SELECT * FROM students;");
+    // console.log(data);
+    // res.json(data.rows);
 
     // this.client.query("SELECT * FROM students;", (err, results) => {
     //   if (err) {
@@ -15,8 +18,20 @@ class StudentController {
     //   console.log(results);
     //   res.json(results.rows);
     // });
+
+    console.log("Getting all students");
+    try {
+      const students = await this.model.findAll();
+      console.log(students);
+      res.json(students);
+    } catch (e) {
+      if (e) {
+        console.log(e);
+      }
+    }
   };
 
+  // replace with new model code
   addStudent = async (req, res) => {
     // const data = await this.client.query("SELECT * FROM students;");
     // console.log(data);
@@ -48,6 +63,7 @@ class StudentController {
     }
   };
 
+  // replace with new model code
   editStudent = async (req, res) => {
     const student = {
       first_name: req.body.first_name,
@@ -76,8 +92,19 @@ class StudentController {
     }
   };
 
+  // replace with new model code
   deleteStudent = async (req, res) => {
     console.log(req.body.id);
+
+    try {
+      const deleteStudentAddresses = await this.client.query(
+        `DELETE FROM students_addresses WHERE student_id = ${req.params.id}`
+      );
+    } catch (e) {
+      console.log("Error when deleting");
+      console.log(e);
+    }
+
     try {
       const deleteStudent = await this.client.query(
         `DELETE FROM students WHERE id = ${req.params.id}`
@@ -99,18 +126,32 @@ class StudentController {
 
   getStudentsAddress = async (req, res) => {
     const userId = req.params.userId;
+    console.log(userId);
+
+    // try {
+    //   const information = await this.client.query(
+    //     `SELECT * FROM students join students_addresses on students.id = students_addresses.student_id WHERE students.id = ${userId};`
+    //   );
+
+    //   res.json(information.rows);
+    // } catch (e) {
+    //   console.log(e);
+    // }
+    console.log(this.student_addresses);
 
     try {
-      const information = await this.client.query(
-        `SELECT * FROM students join students_addresses on students.id = students_addresses.student_id WHERE students.id = ${userId};`
-      );
-
-      res.json(information.rows);
+      const data = await this.student_addresses.findAll({
+        where: { student_id: Number(userId) },
+      });
+      res.json(data);
     } catch (e) {
-      console.log(e);
+      if (e) {
+        console.log(e);
+      }
     }
   };
 
+  // replace with new model code
   addStudentsAddress = async (req, res) => {
     const { address } = req.body;
     const student_id = req.params.userId;

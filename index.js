@@ -1,20 +1,23 @@
 const express = require("express");
 const cors = require("cors");
 
-const { Client } = require("pg");
+const db = require("./db/models/index");
+const { student, students_addresses } = db;
+
+// const { Client } = require("pg");
 
 // If using dotenv = install dotenv and use the line below
 require("dotenv").config();
+// required for postgres connection no sequelize
+// const client = new Client({
+//   user: process.env.USER,
+//   host: process.env.HOST,
+//   database: process.env.DATABASE,
+//   password: "",
+//   port: process.env.PORT,
+// });
 
-const client = new Client({
-  user: process.env.USER,
-  host: process.env.HOST,
-  database: process.env.DATABASE,
-  password: "",
-  port: process.env.PORT,
-});
-
-client.connect();
+// client.connect();
 
 const app = express();
 
@@ -23,7 +26,7 @@ const CartRouter = require("./Routers/CartRouter");
 const UserRouter = require("./Routers/UsersRouter");
 const StudentController = require("./Controllers/StudentController");
 
-const studentController = new StudentController(client);
+const studentController = new StudentController(student, students_addresses);
 
 const StudentRouter = require("./Routers/StudentRouter");
 const studentRouter = new StudentRouter(express, studentController);
