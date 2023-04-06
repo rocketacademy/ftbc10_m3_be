@@ -33,7 +33,7 @@ module.exports = {
         updated_at: new Date(),
       },
       {
-        student_id: 5,
+        student_id: 1,
         address: "Bedok",
         created_at: new Date(),
         updated_at: new Date(),

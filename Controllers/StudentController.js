@@ -1,9 +1,10 @@
 const student = require("../db/models/student");
 
 class StudentController {
-  constructor(model, student_addresses) {
+  constructor(model, student_addresses, workshop) {
     this.model = model;
     this.student_addresses = student_addresses;
+    this.workshop = workshop;
   }
 
   getStudents = async (req, res) => {
@@ -29,6 +30,20 @@ class StudentController {
         console.log(e);
       }
     }
+
+    // console.log("Getting all students");
+    // // this code below includes stundets_addresses data with lazy loading.
+    // try {
+    //   const students = await this.model.findAll({
+    //     include: this.student_addresses,
+    //   });
+    //   console.log(students);
+    //   res.json(students);
+    // } catch (e) {
+    //   if (e) {
+    //     console.log(e);
+    //   }
+    // }
   };
 
   // replace with new model code
@@ -152,6 +167,7 @@ class StudentController {
   };
 
   // replace with new model code
+
   addStudentsAddress = async (req, res) => {
     const { address } = req.body;
     const student_id = req.params.userId;
@@ -172,6 +188,38 @@ class StudentController {
       res.json(information.rows);
     } catch (e) {
       console.log(e);
+    }
+  };
+
+  getWorkshops = async (req, res) => {
+    try {
+      const info = await this.workshop.findAll({
+        include: this.model,
+      });
+      res.json(info);
+    } catch (e) {
+      if (e) {
+        console.log(e);
+        res.json(e);
+      }
+    }
+  };
+
+  getUserWorkshops = async (req, res) => {
+    try {
+      let userId = req.params.userId;
+      const info = await this.model.findAll({
+        where: {
+          id: userId,
+        },
+        include: this.workshop,
+      });
+      res.json(info);
+    } catch (e) {
+      if (e) {
+        console.log(e);
+        res.json(e);
+      }
     }
   };
 }

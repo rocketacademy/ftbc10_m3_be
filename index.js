@@ -2,7 +2,7 @@ const express = require("express");
 const cors = require("cors");
 
 const db = require("./db/models/index");
-const { student, students_addresses } = db;
+const { student, students_addresses, workshop } = db;
 
 // const { Client } = require("pg");
 
@@ -26,7 +26,11 @@ const CartRouter = require("./Routers/CartRouter");
 const UserRouter = require("./Routers/UsersRouter");
 const StudentController = require("./Controllers/StudentController");
 
-const studentController = new StudentController(student, students_addresses);
+const studentController = new StudentController(
+  student,
+  students_addresses,
+  workshop
+);
 
 const StudentRouter = require("./Routers/StudentRouter");
 const studentRouter = new StudentRouter(express, studentController);
